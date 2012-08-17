@@ -12,7 +12,7 @@ class DropboxController < ApplicationController
       request_token = consumer.get_request_token
 
       tmp = settings.value
-      tmp["DROPBOX_TOKEN"] = YAML::dump(request_token)
+      tmp["REQUEST_TOKEN"] = YAML::dump(request_token)
       settings.value = tmp
       settings.save
 
@@ -20,12 +20,12 @@ class DropboxController < ApplicationController
     else
       tmp = settings.value
 
-      request_token = YAML::load(tmp["DROPBOX_TOKEN"])
+      request_token = YAML::load(tmp["REQUEST_TOKEN"])
       access_token  = request_token.get_access_token(:oauth_verifier => params[:oauth_token])
 
       tmp["DROPBOX_TOKEN"]  = access_token.token
       tmp["DROPBOX_SECRET"] = access_token.secret
-      tmp.delete("DROPBOX_TOKEN")
+      tmp.delete("REQUEST_TOKEN")
       settings.value = tmp
       settings.save
 

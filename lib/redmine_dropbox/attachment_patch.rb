@@ -7,7 +7,7 @@ module RedmineDropbox
 
       base.class_eval do
         unloadable
-        # after_validation :save_to_dropbox
+        after_validation :save_to_dropbox
         # before_destroy   :delete_from_dropbox
       end
     end
@@ -18,8 +18,9 @@ module RedmineDropbox
     module InstanceMethods
       def save_to_dropbox
         if @temp_file && (@temp_file.size > 0)
-          logger.debug "[redmine_dropbox] Uploading to #{disk_filename}"
-          # TODO save disk_filename, @temp_file.read
+          logger.debug "[redmine_dropbox_attachments] Uploading #{disk_filename}"
+          
+          dropbox_client.upload disk_filename, @temp_file.read
           md5 = Digest::MD5.new
           self.digest = md5.hexdigest
         end
@@ -27,8 +28,20 @@ module RedmineDropbox
       end
 
       def delete_from_dropbox
-        logger.debug "[redmine_dropbox] Deleting #{disk_filename}"
+        logger.debug "[redmine_dropbox_attachments] Deleting #{disk_filename}"
         # TODO delete disk_filename
+      end
+
+      def dropbox_client
+        settings = Setting.find_by_name("plugin_redmine_dropbox_attachments")
+
+        raise l(:dropbox_plugin_not_configured) if settings.nil?
+        
+        k = settings.value
+
+        raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
+        
+        Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
       end
     end
   end
