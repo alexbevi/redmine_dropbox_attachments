@@ -8,30 +8,11 @@ module RedmineDropbox
       base.class_eval do
         unloadable
         after_validation :save_to_dropbox
-        # before_destroy   :delete_from_dropbox
+        before_destroy   :delete_from_dropbox
       end
     end
 
     module ClassMethods
-    end
-
-    module InstanceMethods
-      def save_to_dropbox
-        if @temp_file && (@temp_file.size > 0)
-          logger.debug "[redmine_dropbox_attachments] Uploading #{disk_filename}"
-          
-          dropbox_client.upload disk_filename, @temp_file.read
-          md5 = Digest::MD5.new
-          self.digest = md5.hexdigest
-        end
-        @temp_file = nil # so that the model's original after_save block skips writing to the fs
-      end
-
-      def delete_from_dropbox
-        logger.debug "[redmine_dropbox_attachments] Deleting #{disk_filename}"
-        # TODO delete disk_filename
-      end
-
       def dropbox_client
         settings = Setting.find_by_name("plugin_redmine_dropbox_attachments")
 
@@ -41,7 +22,26 @@ module RedmineDropbox
 
         raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
         
-        Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+        @@dropbox_client ||= Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+      end
+    end
+
+    module InstanceMethods
+      def save_to_dropbox
+        if @temp_file && (@temp_file.size > 0)
+          logger.debug "[redmine_dropbox_attachments] Uploading #{disk_filename}"
+          
+          Attachment.dropbox_client.upload disk_filename, @temp_file.read
+          md5 = Digest::MD5.new
+          self.digest = md5.hexdigest
+        end
+        @temp_file = nil # so that the model's original after_save block skips writing to the fs
+      end
+
+      def delete_from_dropbox
+        logger.debug "[redmine_dropbox_attachments] Deleting #{disk_filename}"
+        f = Attachment.dropbox_client.find disk_filename
+        f.destroy
       end
     end
   end
