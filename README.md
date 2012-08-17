@@ -16,7 +16,7 @@ After the plugin is installed you will need to restart Redmine for the plugin to
 
 The plugin must be configured from `Administration --> Plugins --> Dropbox Attachment Storage --> Configure`
 
-![Screenshot](screenshot01.png)
+![Screenshot](/screenshot01.png)
 
 ##### Authorization
 
