@@ -1,0 +1,12 @@
+<p>
+  <label><%=l(:label_basedir)%></label>
+  <%= text_field_tag 'settings[DROPBOX_BASE_DIR]', settings['DROPBOX_BASE_DIR'] %>
+  <br />
+  <em><%= l(:basedir_instructions) %></em>
+</p>
+<p>
+  <label>Authorization</label>
+  <%= link_to l(:label_authorize_instance), {:controller => 'dropbox', :action => 'authorize'} %>
+  <br />
+  <em><%= l(:authorization_instructions) %></em>
+</p>

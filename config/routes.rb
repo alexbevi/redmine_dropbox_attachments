@@ -1,0 +1,1 @@
+match '/dropbox/authorize', :to => "dropbox#authorize", :as => :dropbox_authorize

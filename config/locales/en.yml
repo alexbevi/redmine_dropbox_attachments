@@ -1,0 +1,7 @@
+en:
+  label_basedir: "Base Directory"
+  label_authorize_instance: "Authorize Redmine with Dropbox"
+  authorization_instructions: "You must authorize this instance of Redmine with your Dropbox account. Failure to do so will prevent any attachments from being saved successfully."
+  basedir_instructions: "The Base Directory is the subdirectory in the dropbox shared folder where this instance of Redmine will store attachment files."
+  warning_settings_unsaved: "Before authorizing this instance of Redmine, save the plugin configuration values."
+  dropbox_authorization_successful: "Successfully Authorized Redmine with Dropbox!"
