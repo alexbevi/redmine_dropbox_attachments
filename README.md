@@ -14,9 +14,9 @@ After the plugin is installed you will need to restart Redmine for the plugin to
 
 #### Configuration
 
-The plugin must be configured from `Administration --> Plugins --> Dropbox Attachment Storage --> Configure`
+The plugin must be configured from `Administration > Plugins > Dropbox Attachment Storage > Configure`
 
-![Screenshot](screenshot01.png)
+![Screenshot 01](screenshot01.png)
 
 ##### Authorization
 
@@ -24,7 +24,23 @@ Before Redmine can store files on a shared Dropbox folder, it must be authorized
 
 ##### Specifying a Base Directory
 
-`TODO`
+By default, the plugin will write to your Dropbox's `Apps > redmine_files` directory.
+
+If you specify a *Base Directory* value, that subdirectory will be creted under Apps/redmine_files and used to store attachements for the plugin.
+
+![Screenshot 02](screenshot02.png)
+
+##### Storing Attachments for Multiple Redmine's
+
+Since you can only register a single instance of this plugin with Dropbox, if you want to store attachments for multiple installations of Redmine, the steps are:
+
+1) Authorize the plugin _ONCE_ with Dropbox
+
+2) Copy the _Dropbox Token_ and _Dropbox Secret_ values from the authorized installation
+
+3) Paste the token/secret values to each additional installation
+
+Note that if you have multiple installations, it's a good idea to specify different base directories.
 
 #### Acknowledgement
 
