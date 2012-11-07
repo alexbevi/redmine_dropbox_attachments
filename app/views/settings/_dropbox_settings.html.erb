@@ -10,3 +10,18 @@
   <br />
   <em><%= l(:authorization_instructions) %></em>
 </p>
+<hr/>
+
+<p>
+  <strong><%= l(:advanced_settings) %></strong>
+  <br/>
+  <em><%= l(:advanced_settings_instructions) %></em>
+</p>
+<p>
+  <label><%=l(:label_token)%></label>
+  <%= text_field_tag 'settings[DROPBOX_TOKEN]', settings['DROPBOX_TOKEN'] %>
+</p>
+<p>
+  <label><%=l(:label_secret)%></label>
+  <%= text_field_tag 'settings[DROPBOX_SECRET]', settings['DROPBOX_SECRET'] %>
+</p>

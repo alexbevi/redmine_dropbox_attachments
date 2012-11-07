@@ -7,3 +7,7 @@ en:
   dropbox_authorization_successful: "Successfully Authorized Redmine with Dropbox!"
   dropbox_plugin_not_configured: "The Dropbox Attachment Storage plugin has not been configured"
   dropbox_not_authorized: "This installation of Redmine hasn't been authorized with Dropbox"
+  advanced_settings: "Advanced Settings"
+  advanced_settings_instructions: "Copy/Paste a valid token/secret and click apply to re-use an authorized instance of this plugin across multiple installations of Redmine."
+  label_token: "Dropbox Token"
+  label_secret: "Dropbox Secret"
