@@ -36,7 +36,10 @@ module RedmineDropbox
     module InstanceMethods
       # path on dropbox to the file, defaulting the instance's disk_filename
       def dropbox_path(filename = disk_filename)
-        "#{Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']}/#{filename}"
+        path = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
+        path = nil if path.blank?
+
+        [path, filename].compact.join('/')
       end
 
       def save_to_dropbox
