@@ -34,18 +34,24 @@ module RedmineDropbox
     end
 
     module InstanceMethods
+      def dropbox_filename
+        return disk_filename unless disk_filename.blank?
+
+        filename
+      end
+
       # path on dropbox to the file, defaulting the instance's disk_filename
-      def dropbox_path(filename = disk_filename)
+      def dropbox_path(fn = dropbox_filename)
         path = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = nil if path.blank?
 
-        [path, filename].compact.join('/')
+        [path, fn].compact.join('/')
       end
 
       def save_to_dropbox
         if @temp_file && (@temp_file.size > 0)
-          logger.debug "[redmine_dropbox_attachments] Uploading #{disk_filename}"
-          
+          logger.debug "[redmine_dropbox_attachments] Uploading #{dropbox_filename}"
+
           Attachment.dropbox_client.upload dropbox_path, @temp_file.read
           
           md5 = Digest::MD5.new
@@ -58,9 +64,9 @@ module RedmineDropbox
       end
 
       def delete_from_dropbox
-        logger.debug "[redmine_dropbox_attachments] Deleting #{disk_filename}"
+        logger.debug "[redmine_dropbox_attachments] Deleting #{dropbox_filename}"
         
-        f = Attachment.dropbox_client.find(dropbox_path(disk_filename))
+        f = Attachment.dropbox_client.find(dropbox_path(dropbox_filename))
         f.destroy
       end
     end
