@@ -8,7 +8,7 @@ To install the plugin, execute the following commands from the root of your redm
     git clone git://github.com/alexbevi/redmine_dropbox_attachments.git
     bundle install
 
-More information on installing Redmine plugins can be found at [redmine.org](http://www.redmine.org/wiki/redmine/Plugins.)
+More information on installing Redmine plugins can be found at [redmine.org](http://www.redmine.org/wiki/redmine/Plugins.).
 
 After the plugin is installed you will need to restart Redmine for the plugin to be available.
 
@@ -30,7 +30,7 @@ If you specify a *Base Directory* value, that subdirectory will be creted under 
 
 ![Screenshot02](https://raw.github.com/alexbevi/redmine_dropbox_attachments/master/screenshot02.png)
 
-##### Storing Attachments for Multiple Redmine's
+##### Storing Attachments for Multiple Redmine Installations
 
 Since you can only register a single instance of this plugin with Dropbox, if you want to store attachments for multiple installations of Redmine, the steps are:
 
@@ -50,7 +50,7 @@ I also used the [Redmine DropBox](https://github.com/zuinqstudio/redmine_drop_bo
 
 #### About
 
-Copyright (c) 2012 Alex Bevilacqua
+Copyright (c) 2012-2013 Alex Bevilacqua
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
