@@ -17,8 +17,12 @@ module RedmineDropbox
 
     module InstanceMethods
       def redirect_to_dropbox
-        @attachment.increment_download if (@attachment.container.is_a?(Version) || @attachment.container.is_a?(Project))
-        
+        if @attachment.respond_to? :container
+          if (@attachment.container.is_a?(Version) || @attachment.container.is_a?(Project))
+            @attachment.increment_download
+          end
+        end
+
         f = Attachment.dropbox_client.find(@attachment.dropbox_path)
         
         redirect_to f.direct_url[:url]
