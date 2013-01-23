@@ -35,9 +35,8 @@ module RedmineDropbox
 
     module InstanceMethods
       def dropbox_filename
-        return disk_filename unless disk_filename.blank?
-
-        filename
+        self.disk_filename = "#{Time.now.to_i}_#{filename}" if self.new_record?
+        self.disk_filename.blank? ? filename : self.disk_filename
       end
 
       # path on dropbox to the file, defaulting the instance's disk_filename
