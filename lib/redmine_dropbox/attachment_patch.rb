@@ -35,7 +35,11 @@ module RedmineDropbox
 
     module InstanceMethods
       def dropbox_filename
-        self.disk_filename = "#{Time.now.to_i}_#{filename}" if self.new_record?
+        if self.new_record?
+          timestamp = DateTime.now.strftime("%y%m%d%H%M%S")
+          self.disk_filename = "#{timestamp}_#{filename}"
+        end
+        
         self.disk_filename.blank? ? filename : self.disk_filename
       end
 
