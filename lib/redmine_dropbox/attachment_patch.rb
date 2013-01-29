@@ -15,7 +15,7 @@ module RedmineDropbox
     end
 
     module ClassMethods
-      
+      
       def set_context(context)
         @@context_obj = context
       end
