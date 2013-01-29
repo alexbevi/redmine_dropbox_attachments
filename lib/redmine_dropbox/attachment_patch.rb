@@ -7,12 +7,23 @@ module RedmineDropbox
 
       base.class_eval do
         unloadable
+        cattr_accessor :context_obj
+        @@context_obj = nil
         after_validation :save_to_dropbox
         before_destroy   :delete_from_dropbox
       end
     end
 
     module ClassMethods
+      
+      def set_context(context)
+        @@context_obj = context
+      end
+      
+      def get_context
+        @@context_obj
+      end
+      
       def dropbox_plugin_settings(key = nil)
         settings = Setting.find_by_name("plugin_redmine_dropbox_attachments")
 
@@ -34,6 +45,7 @@ module RedmineDropbox
     end
 
     module InstanceMethods
+      
       def dropbox_filename
         if self.new_record?
           timestamp = DateTime.now.strftime("%y%m%d%H%M%S")
@@ -47,8 +59,17 @@ module RedmineDropbox
       def dropbox_path(fn = dropbox_filename)
         path = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = nil if path.blank?
+        
+        #
+        # get all needed information to define the subdirectories...
+        #
+        # @author Alexander Nickel <mr.alexander.nickel@gmail.com>
+        # @copyright Alexander Nickel 2013-01-29T14:09:50Z
+        #
+        context = self.class.get_context
+        project_identifier = context.project.identifier
 
-        [path, fn].compact.join('/')
+        [path, project_identifier, context.class, fn].compact.join('/')
       end
 
       def save_to_dropbox
