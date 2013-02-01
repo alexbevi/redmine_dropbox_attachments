@@ -9,6 +9,14 @@ module RedmineDropbox
         unloadable
         after_validation :save_to_dropbox
         before_destroy   :delete_from_dropbox
+
+        def readable?
+          begin
+            return true if Attachment.dropbox_client.find(self.dropbox_path)
+          rescue
+            return false
+          end
+        end
       end
     end
 
@@ -34,13 +42,18 @@ module RedmineDropbox
     end
 
     module InstanceMethods
+
       def dropbox_filename
         if self.new_record?
           timestamp = DateTime.now.strftime("%y%m%d%H%M%S")
           self.disk_filename = "#{timestamp}_#{filename}"
         end
+
+        f = self.disk_filename.blank? ? filename : self.disk_filename
+
+        logger.debug "[redmine_dropbox_attachments] returning #{f}"
         
-        self.disk_filename.blank? ? filename : self.disk_filename
+        f
       end
 
       # path on dropbox to the file, defaulting the instance's disk_filename
