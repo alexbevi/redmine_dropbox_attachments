@@ -16,7 +16,7 @@ module Redmine
               end
             end
           end
-          orig_save_attachments
+          orig_save_attachments attachments, author
         end
       end
       
