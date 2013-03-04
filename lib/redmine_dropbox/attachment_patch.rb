@@ -9,6 +9,14 @@ module RedmineDropbox
         unloadable
         after_validation :save_to_dropbox
         before_destroy   :delete_from_dropbox
+
+        def readable?
+          begin
+            return true if Attachment.dropbox_client.find(self.dropbox_path)
+          rescue
+            return false
+          end
+        end
       end
     end
 
@@ -25,19 +33,30 @@ module RedmineDropbox
       end
 
       def dropbox_client
-        k = Attachment.dropbox_plugin_settings
+        unless @@dropbox_client
+          k = Attachment.dropbox_plugin_settings
+          
+          raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
+          @@dropbox_client = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+        end
 
-        raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
-        
-        Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+        @@dropbox_client
       end      
     end
 
     module InstanceMethods
-      def dropbox_filename
-        return disk_filename unless disk_filename.blank?
 
-        filename
+      def dropbox_filename
+        if self.new_record?
+          timestamp = DateTime.now.strftime("%y%m%d%H%M%S")
+          self.disk_filename = "#{timestamp}_#{filename}"
+        end
+
+        f = self.disk_filename.blank? ? filename : self.disk_filename
+
+        logger.debug "[redmine_dropbox_attachments] returning #{f}"
+        
+        f
       end
 
       # path on dropbox to the file, defaulting the instance's disk_filename
