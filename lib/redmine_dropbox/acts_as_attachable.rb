@@ -6,11 +6,11 @@ module Redmine
         alias_method :orig_save_attachments, :save_attachments
         
         def self.included(base)
-          base.extend ClassMethods
+          base.extend(ClassMethods)
         end
 
         def save_attachments(attachments, author=User.current)
-          Attachment.set_context self
+          Attachment.set_context(self)
           orig_save_attachments(attachments, author=User.current)
         end
         
