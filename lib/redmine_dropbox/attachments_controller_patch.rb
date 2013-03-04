@@ -23,9 +23,18 @@ module RedmineDropbox
           end
         end
 
-        f = Attachment.dropbox_client.find(@attachment.dropbox_path)
-        
-        redirect_to f.direct_url[:url]
+        client, path = Attachment.dropbox_client, @attachment.dropbox_path.split("/")
+
+        # XXX 1.x compatibility
+        # if the file doesn't existing in the /base/project/class/filename location, try
+        # falling back to /base/filename
+        ref = begin
+          client.find(path.join("/"))
+        rescue Dropbox::API::Error::NotFound
+          client.find([path[0], path[-1]].flatten.join("/"))
+        end
+
+        redirect_to ref.direct_url[:url]
       end
     end
   end
