@@ -7,6 +7,10 @@ module RedmineDropbox
 
       base.class_eval do
         unloadable
+        
+        cattr_accessor :context_obj, :dropbox_client_instance
+        @@context_obj, @@dropbox_client_instance = nil, nil
+
         after_validation :save_to_dropbox
         before_destroy   :delete_from_dropbox
 
@@ -21,6 +25,15 @@ module RedmineDropbox
     end
 
     module ClassMethods
+      
+      def set_context(context)
+        @@context_obj = context
+      end
+      
+      def get_context
+        @@context_obj
+      end
+      
       def dropbox_plugin_settings(key = nil)
         settings = Setting.find_by_name("plugin_redmine_dropbox_attachments")
 
@@ -33,19 +46,18 @@ module RedmineDropbox
       end
 
       def dropbox_client
-        unless @@dropbox_client
+        if Attachment.dropbox_client_instance.nil?
           k = Attachment.dropbox_plugin_settings
           
           raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
-          @@dropbox_client = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+          @@dropbox_client_instance = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
         end
 
-        @@dropbox_client
-      end      
+        @@dropbox_client_instance
+      end
     end
 
     module InstanceMethods
-
       def dropbox_filename
         if self.new_record?
           timestamp = DateTime.now.strftime("%y%m%d%H%M%S")
@@ -63,15 +75,24 @@ module RedmineDropbox
       def dropbox_path(fn = dropbox_filename)
         path = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = nil if path.blank?
+        
+        #
+        # get all needed information to define the subdirectories...
+        #
+        # @author Alexander Nickel <mr.alexander.nickel@gmail.com>
+        # @copyright Alexander Nickel 2013-01-29T14:09:50Z
+        #
+        context = self.class.get_context
+        project_identifier = context.project.identifier
 
-        [path, fn].compact.join('/')
+        [path, project_identifier, context.class, fn].compact.join('/')
       end
 
       def save_to_dropbox
         if @temp_file && (@temp_file.size > 0)
           logger.debug "[redmine_dropbox_attachments] Uploading #{dropbox_filename}"
 
-          Attachment.dropbox_client.upload dropbox_path, @temp_file.read
+          Attachment.dropbox_client.upload(dropbox_path, @temp_file.read)
           
           md5 = Digest::MD5.new
           self.digest = md5.hexdigest
