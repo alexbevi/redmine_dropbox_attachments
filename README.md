@@ -55,6 +55,10 @@ This plugin is heavily based on the [Redmine S3](https://github.com/tigrish/redm
 
 I also used the [Redmine DropBox](https://github.com/zuinqstudio/redmine_drop_box) plugin to find some quick answers to interacting with dropbox.
 
+### Thanks
+
+Big thanks to [Alexander Nickel](https://github.com/mralexandernickel) for the initial implementation of the project folder hierarchy.
+
 ## About
 
 Copyright (c) 2012-2013 Alex Bevilacqua
