@@ -21,9 +21,9 @@ To remove the plugin, from the root of your installation directory do the follow
 
 ## Configuration
 
-The plugin must be configured from `Administration > Plugins > Dropbox Attachment Storage > Configure`
+![Screenshot](screenshot.png)
 
-![Screenshot01](screenshot01.png)
+The plugin must be configured from `Administration > Plugins > Dropbox Attachment Storage > Configure`
 
 ### Authorization
 
@@ -35,13 +35,12 @@ By default, the plugin will write to your Dropbox's `Apps > redmine_files` direc
 
 If you specify a *Base Directory* value, that subdirectory will be creted under Apps/redmine_files and used to store attachements for the plugin.
 
-![Screenshot02](screenshot02.png)
-
 ### Storing Attachments in a Project Hierarchy
 
 If this option is checked, files will be stored in a folder structure in the format of:
 
 ```
+
 /base
   /project
     /module
@@ -99,4 +98,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #### Shameless Plug(s)
 
-If you like this plugin, feel free to endorse me ;) [![endorse](http://api.coderwall.com/alexbevi/endorsecount.png)](http://coderwall.com/alexbevi)
+If you like this plugin, feel free to endorse me ;) 
+
+[![endorse](http://api.coderwall.com/alexbevi/endorsecount.png)](http://coderwall.com/alexbevi)
