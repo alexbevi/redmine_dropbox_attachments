@@ -64,11 +64,7 @@ module RedmineDropbox
           self.disk_filename = "#{timestamp}_#{filename}"
         end
 
-        f = self.disk_filename.blank? ? filename : self.disk_filename
-
-        logger.debug "[redmine_dropbox_attachments] returning #{f}"
-        
-        f
+        self.disk_filename.blank? ? filename : self.disk_filename
       end
 
       # path on dropbox to the file, defaulting the instance's disk_filename
@@ -76,13 +72,8 @@ module RedmineDropbox
         path = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = nil if path.blank?
         
-        #
-        # get all needed information to define the subdirectories...
-        #
-        # @author Alexander Nickel <mr.alexander.nickel@gmail.com>
-        # @copyright Alexander Nickel 2013-01-29T14:09:50Z
-        #
-        context = self.class.get_context
+        # The context is only necessary for new attachments.
+        context = self.container || self.class.get_context
         project_identifier = context.project.identifier
 
         [path, project_identifier, context.class, fn].compact.join('/')
@@ -105,7 +96,7 @@ module RedmineDropbox
 
       def delete_from_dropbox
         logger.debug "[redmine_dropbox_attachments] Deleting #{dropbox_filename}"
-        
+
         f = Attachment.dropbox_client.find(dropbox_path(dropbox_filename))
         f.destroy
       end
