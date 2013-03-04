@@ -11,3 +11,6 @@ en:
   advanced_settings_instructions: "Copy/Paste a valid token/secret and click apply to re-use an authorized instance of this plugin across multiple installations of Redmine."
   label_token: "Dropbox Token"
   label_secret: "Dropbox Secret"
+  label_authorization: "Authorization"
+  label_use_hierarchy: "Hierarchial Storage"
+  label_about_hierarchy: "Sort attachments into folders. For example: /<Base Directory>/<Project>/<Module>/files..."
