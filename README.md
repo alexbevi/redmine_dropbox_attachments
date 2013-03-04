@@ -1,4 +1,4 @@
-Use [Dropbox](http://www.dropbox.com) as the storage backend for your [Redmine](http://www.redmine.org) installation
+Use [Dropbox](http://www.dropbox.com) as the storage backend for your [Redmine](http://www.redmine.org) installation.
 
 ## Installation
 
@@ -36,6 +36,21 @@ By default, the plugin will write to your Dropbox's `Apps > redmine_files` direc
 If you specify a *Base Directory* value, that subdirectory will be creted under Apps/redmine_files and used to store attachements for the plugin.
 
 ![Screenshot02](screenshot02.png)
+
+### Storing Attachments in a Project Hierarchy
+
+If this option is checked, files will be stored in a folder structure in the format of:
+
+```
+/base
+  /project
+    /module
+      file
+      file
+      file
+```
+
+This makes it easier to locate an attachment directly on Dropbox as there is a bit more context to the stored content.      
 
 ### Storing Attachments for Multiple Redmine Installations
 
