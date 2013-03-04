@@ -33,11 +33,14 @@ module RedmineDropbox
       end
 
       def dropbox_client
-        k = Attachment.dropbox_plugin_settings
+        unless @@dropbox_client
+          k = Attachment.dropbox_plugin_settings
+          
+          raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
+          @@dropbox_client = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+        end
 
-        raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
-        
-        Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+        @@dropbox_client
       end      
     end
 
