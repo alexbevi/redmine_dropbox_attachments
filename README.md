@@ -73,6 +73,12 @@ I also used the [Redmine DropBox](https://github.com/zuinqstudio/redmine_drop_bo
 
 Big thanks to [Alexander Nickel](https://github.com/mralexandernickel) for the initial implementation of the project folder hierarchy.
 
+## Notes
+
+### Issues Upgrading from v2.0.0
+
+This version ignored the value of base_directory and instead used a string value of "false". Just copy the files from "false" to the desired directory.
+
 ## About
 
 Copyright (c) 2012-2013 Alex Bevilacqua
