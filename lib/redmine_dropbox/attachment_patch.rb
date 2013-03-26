@@ -70,9 +70,9 @@ module RedmineDropbox
       # path on dropbox to the file, defaulting the instance's disk_filename
       def dropbox_path(fn = dropbox_filename)
         base = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
-        path = []
-        path << (base.blank?) ? nil : base
-        
+        path = [nil]
+        path = [base] unless base.blank?
+
         if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"
           # The context is only necessary for new attachments.
           ctx = self.container || self.class.get_context
