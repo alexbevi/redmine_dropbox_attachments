@@ -39,15 +39,12 @@ If you specify a *Base Directory* value, that subdirectory will be creted under 
 
 If this option is checked, files will be stored in a folder structure in the format of:
 
-```
-
-/base
-  /project
-    /module
-      file
-      file
-      file
-```
+    /base
+      /project
+        /module
+          file
+          file
+          file
 
 This makes it easier to locate an attachment directly on Dropbox as there is a bit more context to the stored content.      
 
@@ -74,6 +71,12 @@ I also used the [Redmine DropBox](https://github.com/zuinqstudio/redmine_drop_bo
 Big thanks to [Alexander Nickel](https://github.com/mralexandernickel) for the initial implementation of the project folder hierarchy.
 
 ## Notes
+
+Ruby 1.9+ is required in order for this plugin to work properly. Using Ruby 1.8.7 will result in
+
+    NoMethodError (undefined method `<=>' for :root:Symbol)
+
+when trying to delete an object (File, Issue, Document ... etc) that has an attachment.
 
 ### Issues Upgrading from v2.0.0
 
