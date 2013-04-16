@@ -47,8 +47,6 @@ module RedmineDropbox
           #   ex: http://url/projects/project_id/..../action_id
           ref = request.env["HTTP_REFERER"].split("/")
 
-          binding.pry
-
           klass = ref[-2].singularize.titlecase
           # XXX For attachments in the "File" area, we want to identify
           # as a "Project" since there technically is no "File" container
