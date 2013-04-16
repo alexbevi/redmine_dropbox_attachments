@@ -93,9 +93,11 @@ module RedmineDropbox
 
         if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"
           if ctx.nil? && pid.nil?
-            context = self.class.get_context
+            context = self.container || self.class.get_context
             project = context.is_a?(Hash) ? Project.find(context[:project]) : context.project
             ctx = context.is_a?(Hash) ? context[:class] : context.class.name
+            # XXX s/WikiPage/Wiki
+            ctx = "Wiki" if ctx == "WikiPage"
             pid = project.identifier
           end
           
