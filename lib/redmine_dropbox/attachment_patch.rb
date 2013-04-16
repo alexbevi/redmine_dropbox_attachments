@@ -48,8 +48,9 @@ module RedmineDropbox
         if Attachment.dropbox_client_instance.nil?
           k = Attachment.dropbox_plugin_settings
           
-          raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
-          @@dropbox_client_instance = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+          raise l(:dropbox_not_authorized) unless (k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"])
+          
+          @@dropbox_client_instance = Dropbox::API::Client.new(:token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"])
         end
 
         @@dropbox_client_instance
@@ -65,7 +66,7 @@ module RedmineDropbox
         path = [nil]
         path = [base] unless base.blank?
 
-        if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"          
+        if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"
           path << project_id
           path << context
         end

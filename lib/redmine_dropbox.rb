@@ -18,6 +18,5 @@ module Redmine::Acts::Attachable
 end
 
 ActiveRecord::Base.send(:include, Redmine::Acts::Attachable)
-
 AttachmentsController.send(:include, RedmineDropbox::AttachmentsControllerPatch)
 Attachment.send(:include, RedmineDropbox::AttachmentPatch)
