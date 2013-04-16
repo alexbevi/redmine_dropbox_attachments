@@ -2,7 +2,7 @@ module RedmineDropbox
   module AttachmentsControllerPatch
     
     def self.included(base) # :nodoc:
-      base.extend(ClassMethods)
+      base.send(:include, InstanceMethods)
 
       if Redmine::VERSION.to_s >= "2.3"
         base.send(:include, Redmine23AndNewer)
@@ -17,10 +17,10 @@ module RedmineDropbox
       end
     end
 
-    module ClassMethods
+    module InstanceMethods
       def redirect_to_dropbox(path)
         client = Attachment.dropbox_client
-        
+
         # XXX redmine_dropbox_attachments 1.x compatibility
         # if the file doesn't existing in the /base/project/class/filename location, try falling back to /base/filename
         ref = begin
@@ -36,6 +36,8 @@ module RedmineDropbox
 
     module Redmine23AndNewer
       def prepare_dropbox_redirect
+        # redirecting to dropbox is not necessary only an ajax upload is being done,
+        # which is determined by having an uninitialized @attachment
         skip_redirection = false
 
         if @attachment.nil?
@@ -45,7 +47,13 @@ module RedmineDropbox
           #   ex: http://url/projects/project_id/..../action_id
           ref = request.env["HTTP_REFERER"].split("/")
 
-          klass   = ref[-2].singularize.titlecase
+          binding.pry
+
+          klass = ref[-2].singularize.titlecase
+          # XXX For attachments in the "File" area, we want to identify
+          # as a "Project" since there technically is no "File" container
+          klass = "Project" if klass == "File"
+          
           record  = ref[-1].to_i
           project = if record > 0
             klass.constantize.find(record).project_id
@@ -58,15 +66,17 @@ module RedmineDropbox
 
           Attachment.set_context :class => klass, :project => project
           skip_redirection = true
-        elsif @attachment.respond_to? :container
-          if (@attachment.container.is_a?(Version) || @attachment.container.is_a?(Project))
-            @attachment.increment_download
+        else
+          if @attachment.respond_to?(:container)
+            Attachment.set_context @attachment.container
+            # increment the download counter if necessary
+            @attachment.increment_download if (@attachment.container.is_a?(Version) || @attachment.container.is_a?(Project))
           end
         end
 
         path ||= @attachment.dropbox_path
 
-        self.class.redirect_to_dropbox(path) unless skip_redirection
+        redirect_to_dropbox(path) unless skip_redirection
       end
     end
 
@@ -78,7 +88,7 @@ module RedmineDropbox
           end
         end
 
-        self.class.redirect_to_dropbox @attachment.dropbox_path
+        redirect_to_dropbox @attachment.dropbox_path
       end
     end
   
