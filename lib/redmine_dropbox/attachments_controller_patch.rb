@@ -39,24 +39,30 @@ module RedmineDropbox
         # redirecting to dropbox is not necessary only an ajax upload is being done,
         # which is determined by having an uninitialized @attachment
         skip_redirection = false
-
+        
+        # XXX Redmine 2.3+ ajax file upload handling
         if @attachment.nil?
-          # XXX Redmine 2.3+ ajax file upload handling
           # Since we uploads occur prior to an actual record being created,
           # the context needs to be parsed from the url.
           #   ex: http://url/projects/project_id/..../action_id
           ref = request.env["HTTP_REFERER"].split("/")
+          # We also only want the url parts that follow .../projects/ if possible.
+          # If not, just use the standard split HTTP_REFERER
+          ref = ref[ref.index("projects") + 1 .. -1] if ref.index("projects")
 
-          klass = ref[-2].singularize.titlecase
-          # XXX For attachments in the "File" area, we want to identify
+          # For "Issues", the url is longer than "News" or "Documents"
+          klass_idx = (ref.length > 2) ? -2 : -1
+          klass = ref[klass_idx].singularize.titlecase
+          # For attachments in the "File" area, we want to identify
           # as a "Project" since there technically is no "File" container
           klass = "Project" if klass == "File"
           
+          # Try to match an id (regardless of whether it'll be valid)
           record  = ref[-1].to_i
           project = if record > 0
             klass.constantize.find(record).project_id
           else
-            ref[-3] 
+            ref[0] # we won't have a project AND a record, so this shouldn't fail
           end
 
           filename = request.env["QUERY_STRING"].scan(/filename=(.*)/).flatten.first
