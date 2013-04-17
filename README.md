@@ -12,6 +12,12 @@ More information on installing Redmine plugins can be found at [redmine.org](htt
 
 After the plugin is installed you will need to restart Redmine for the plugin to be available.
 
+### Compatiblity
+
+This plugin has been tested against [Redmine](http://www.redmine.org) 2.0+. 
+
+Though it "should" be capable of working with older (1.x) versions, no guarantees will be made ;)
+
 ### Uninstallation
 
 To remove the plugin, from the root of your installation directory do the following:
@@ -58,7 +64,7 @@ Since you can only register a single instance of this plugin with Dropbox, if yo
 
 3) Paste the token/secret values to each additional installation
 
-Note that if you have multiple installations, it's a good idea to specify different base directories.
+Note that if you have multiple installations, it's a good idea to specify different base directories. If you happen to use the same project-identifiers across installations, the plugin will not be able to differentiate which installation a file should belong to.
 
 ## Acknowledgement
 
@@ -80,7 +86,7 @@ when trying to delete an object (File, Issue, Document ... etc) that has an atta
 
 ### Issues Upgrading from v2.0.0
 
-This version ignored the value of base_directory and instead used a string value of "false". Just copy the files from "false" to the desired directory.
+This version ignored the value of *Base Directory* and instead used a string value of "false". Just copy the files from "false" to the desired directory.
 
 ## About
 
