@@ -25,7 +25,6 @@ module RedmineDropbox
     end
 
     module ClassMethods
-      
       def set_context(context)
         @@context_obj = context
       end
@@ -49,11 +48,31 @@ module RedmineDropbox
         if Attachment.dropbox_client_instance.nil?
           k = Attachment.dropbox_plugin_settings
           
-          raise l(:dropbox_not_authorized) unless k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"]
-          @@dropbox_client_instance = Dropbox::API::Client.new :token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"]
+          raise l(:dropbox_not_authorized) unless (k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"])
+          
+          @@dropbox_client_instance = Dropbox::API::Client.new(:token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"])
         end
 
         @@dropbox_client_instance
+      end
+
+      # determine where the file would be stored without requiring an
+      # attachment instance
+      def dropbox_absolute_path(filename, context, project_id)
+        ts = DateTime.now.strftime("%y%m%d%H%M%S")
+        fn = "#{ts}_#{filename}"
+        
+        base = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
+        path = [nil]
+        path = [base] unless base.blank?
+
+        if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"
+          path << project_id
+          path << context
+        end
+        
+        path << fn
+        path.compact.join('/')
       end
     end
 
@@ -68,18 +87,23 @@ module RedmineDropbox
       end
 
       # path on dropbox to the file, defaulting the instance's disk_filename
-      def dropbox_path(fn = dropbox_filename)
+      def dropbox_path(fn = dropbox_filename, ctx = nil, pid = nil)
         base = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = [nil]
         path = [base] unless base.blank?
 
         if Attachment.dropbox_plugin_settings['DROPBOX_USE_HIERARCHY'] == "on"
-          # The context is only necessary for new attachments.
-          ctx = self.container || self.class.get_context
-          pid = ctx.project.identifier
-
+          if ctx.nil? && pid.nil?
+            context = self.container || self.class.get_context
+            project = context.is_a?(Hash) ? Project.find(context[:project]) : context.project
+            ctx = context.is_a?(Hash) ? context[:class] : context.class.name
+            # XXX s/WikiPage/Wiki
+            ctx = "Wiki" if ctx == "WikiPage"
+            pid = project.identifier
+          end
+          
           path << pid
-          path << ctx.class.name
+          path << ctx
         end
         
         path << fn
@@ -89,8 +113,7 @@ module RedmineDropbox
       def save_to_dropbox
         if @temp_file && (@temp_file.size > 0)
           logger.debug "[redmine_dropbox_attachments] Uploading #{dropbox_filename}"
-
-          Attachment.dropbox_client.upload(dropbox_path, @temp_file.read)
+          Attachment.dropbox_client.upload dropbox_path, @temp_file.is_a?(String) ? @temp_file : @temp_file.read
           
           md5 = Digest::MD5.new
           self.digest = md5.hexdigest
