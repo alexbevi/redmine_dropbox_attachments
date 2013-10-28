@@ -116,3 +116,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 If you like this plugin, feel free to endorse me ;) 
 
 [![endorse](http://api.coderwall.com/alexbevi/endorsecount.png)](http://coderwall.com/alexbevi)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/alexbevi/redmine_dropbox_attachments/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
