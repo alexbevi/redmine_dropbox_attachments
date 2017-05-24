@@ -22,14 +22,14 @@ class DropboxController < ApplicationController
 
       redirect_to request_token.authorize_url(:oauth_callback => url_for(:action => 'authorize'))
     else
-      # Create new request_token 
+      # Create new request_token
       consumer = Dropbox::API::OAuth.consumer(:authorize)
       request_token = OAuth::RequestToken.new(consumer, session[:request_token], session[:request_token_secret])
 
       tmp = settings.value
 
       # comment below line to use new request_token
-      #request_token = YAML::load(tmp["REQUEST_TOKEN"])   
+      #request_token = YAML::load(tmp["REQUEST_TOKEN"])
       access_token  = request_token.get_access_token(:oauth_verifier => params[:oauth_token])
 
       tmp["DROPBOX_TOKEN"]  = access_token.token

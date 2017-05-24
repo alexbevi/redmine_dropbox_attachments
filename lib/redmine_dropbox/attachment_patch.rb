@@ -1,13 +1,13 @@
 module RedmineDropbox
   module AttachmentPatch
-    
+
     def self.included(base) # :nodoc:
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
 
       base.class_eval do
         unloadable
-        
+
         cattr_accessor :context_obj, :dropbox_client_instance
         @@context_obj, @@dropbox_client_instance = nil, nil
 
@@ -28,11 +28,11 @@ module RedmineDropbox
       def set_context(context)
         @@context_obj = context
       end
-      
+
       def get_context
         @@context_obj
       end
-      
+
       def dropbox_plugin_settings(key = nil)
         settings = Setting.find_by_name("plugin_redmine_dropbox_attachments")
 
@@ -47,9 +47,9 @@ module RedmineDropbox
       def dropbox_client
         if Attachment.dropbox_client_instance.nil?
           k = Attachment.dropbox_plugin_settings
-          
+
           raise l(:dropbox_not_authorized) unless (k["DROPBOX_TOKEN"] && k["DROPBOX_SECRET"])
-          
+
           @@dropbox_client_instance = Dropbox::API::Client.new(:token => k["DROPBOX_TOKEN"], :secret => k["DROPBOX_SECRET"])
         end
 
@@ -61,7 +61,7 @@ module RedmineDropbox
       def dropbox_absolute_path(filename, context, project_id)
         ts = DateTime.now.strftime("%y%m%d%H%M%S")
         fn = "#{ts}_#{filename}"
-        
+
         base = Attachment.dropbox_plugin_settings['DROPBOX_BASE_DIR']
         path = [nil]
         path = [base] unless base.blank?
@@ -70,7 +70,7 @@ module RedmineDropbox
           path << project_id
           path << context
         end
-        
+
         path << fn
         path.compact.join('/')
       end
@@ -101,11 +101,11 @@ module RedmineDropbox
             ctx = "Wiki" if ctx == "WikiPage"
             pid = project.identifier
           end
-          
+
           path << pid
           path << ctx
         end
-        
+
         path << fn
         path.compact.join('/')
       end
@@ -114,12 +114,12 @@ module RedmineDropbox
         if @temp_file && (@temp_file.size > 0)
           logger.debug "[redmine_dropbox_attachments] Uploading #{dropbox_filename}"
           Attachment.dropbox_client.upload dropbox_path, @temp_file.is_a?(String) ? @temp_file : @temp_file.read
-          
+
           md5 = Digest::MD5.new
           self.digest = md5.hexdigest
         end
 
-        # set the temp file to nil so the model's original after_save block 
+        # set the temp file to nil so the model's original after_save block
         # skips writing to the filesystem
         @temp_file = nil
       end

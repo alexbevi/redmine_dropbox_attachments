@@ -6,7 +6,7 @@ Redmine::Plugin.register :redmine_dropbox_attachments do
   description "Use Dropbox for attachment storage"
   url         "https://github.com/alexbevi/redmine_dropbox_attachments"
   author_url  "mailto:alexbevi@gmail.com"
-  version     "2.1.0"
+  version     "2.2.0"
 
   requires_redmine :version_or_higher => '2.0.0'
 

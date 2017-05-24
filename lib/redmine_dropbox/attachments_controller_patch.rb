@@ -1,6 +1,6 @@
 module RedmineDropbox
   module AttachmentsControllerPatch
-    
+
     def self.included(base) # :nodoc:
       base.send(:include, InstanceMethods)
 
@@ -39,7 +39,7 @@ module RedmineDropbox
         # redirecting to dropbox is not necessary only an ajax upload is being done,
         # which is determined by having an uninitialized @attachment
         skip_redirection = false
-        
+
         # XXX Redmine 2.3+ ajax file upload handling
         if @attachment.nil?
           # Since we uploads occur prior to an actual record being created,
@@ -56,7 +56,7 @@ module RedmineDropbox
           # For attachments in the "File" area, we want to identify
           # as a "Project" since there technically is no "File" container
           klass = "Project" if klass == "File"
-          
+
           # Try to match an id (regardless of whether it'll be valid)
           record  = ref[-1].to_i
           project = if record > 0
@@ -95,6 +95,6 @@ module RedmineDropbox
         redirect_to_dropbox @attachment.dropbox_path
       end
     end
-  
+
   end
 end

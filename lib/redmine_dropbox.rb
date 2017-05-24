@@ -4,7 +4,7 @@ require 'redmine_dropbox/attachments_controller_patch'
 module Redmine::Acts::Attachable
   module InstanceMethods
     alias_method :orig_save_attachments, :save_attachments
-    
+
     def self.included(base)
       base.extend(ClassMethods)
     end
@@ -13,7 +13,7 @@ module Redmine::Acts::Attachable
       Attachment.set_context(self)
       orig_save_attachments(attachments, author=User.current)
     end
-    
+
   end
 end
 
