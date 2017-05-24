@@ -3,27 +3,29 @@ Use [Dropbox](http://www.dropbox.com) as the storage backend for your [Redmine](
 ## Installation
 
 To install the plugin, execute the following commands from the root of your Redmine directory:
-    
-    cd plugins
-    git clone git://github.com/alexbevi/redmine_dropbox_attachments.git
-    bundle install
+```
+cd plugins
+git clone git://github.com/alexbevi/redmine_dropbox_attachments.git
+bundle install
+```
 
-More information on installing Redmine plugins can be found at [redmine.org](http://www.redmine.org/wiki/redmine/Plugins.).
+More information on installing Redmine plugins can be found in [Redmine Wiki](http://www.redmine.org/wiki/redmine/Plugins).
 
 After the plugin is installed you will need to restart Redmine for the plugin to be available.
 
 ### Compatiblity
 
-This plugin has been tested against [Redmine](http://www.redmine.org) 2.0+. 
+This plugin has been tested against [Redmine](http://www.redmine.org) 2.0+.
 
 Though it "should" be capable of working with older (1.x) versions, no guarantees will be made ;)
 
 ### Uninstallation
 
 To remove the plugin, from the root of your installation directory do the following:
-
-    rm -rf plugins/redmine_dropbox_attachments
-    bundle install
+```
+rm -rf plugins/redmine_dropbox_attachments
+bundle install
+```
 
 ## Configuration
 
@@ -44,15 +46,16 @@ If you specify a *Base Directory* value, that subdirectory will be creted under 
 ### Storing Attachments in a Project Hierarchy
 
 If this option is checked, files will be stored in a folder structure in the format of:
+```
+/base
+  /project
+    /module
+      file
+      file
+      file
+```
 
-    /base
-      /project
-        /module
-          file
-          file
-          file
-
-This makes it easier to locate an attachment directly on Dropbox as there is a bit more context to the stored content.      
+This makes it easier to locate an attachment directly on Dropbox as there is a bit more context to the stored content.
 
 ### Storing Attachments for Multiple Redmine Installations
 
@@ -86,7 +89,8 @@ when trying to delete an object (File, Issue, Document ... etc) that has an atta
 
 ### Issues Upgrading from v2.0.0
 
-This version ignored the value of *Base Directory* and instead used a string value of "false". Just copy the files from "false" to the desired directory.
+That version ignored the value of *Base Directory* and instead used a string value of "false". 
+Just copy the files from "false" to the desired directory.
 
 ## About
 
@@ -113,6 +117,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #### Shameless Plug(s)
 
-If you like this plugin, feel free to endorse me ;) 
-
-[![endorse](http://api.coderwall.com/alexbevi/endorsecount.png)](http://coderwall.com/alexbevi)
+If you like this plugin, feel free to [endorse](http://coderwall.com/alexbevi) me ;)
